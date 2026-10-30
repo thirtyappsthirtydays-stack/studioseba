@@ -20,11 +20,27 @@
 <style>
 body{margin:0;background:#FAFAF8}
 a{color:#4B38C4}a:hover{color:#3A2A9E}
+@keyframes sb-type{from{opacity:0}to{opacity:1}}
+@keyframes sb-caret{0%,100%{box-shadow:0.06em 0 0 0 #4B38C4}}
+@keyframes sb-blink{0%,49.9%{box-shadow:0.06em 0 0 0 #4B38C4}50%,100%{box-shadow:none}}
+@keyframes sb-wipe{from{clip-path:inset(-60% 105% -60% -5%)}to{clip-path:inset(-60% -5% -60% -5%)}}
+@keyframes sb-hl{from{background-size:0% 45%}to{background-size:100% 45%}}
+@keyframes sb-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes sb-rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.sb-c{animation:sb-type 1ms linear both,sb-caret 32ms step-end}
+.sb-last{animation:sb-type 1ms linear both,sb-blink 900ms step-end 3}
+@supports (animation-timeline: view()){.sb-reveal{animation:sb-rise linear both;animation-timeline:view();animation-range:entry 0% cover 20%}.sb-d1{animation-range:entry 6% cover 26%}.sb-d2{animation-range:entry 12% cover 32%}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 <style>
 html{scroll-behavior:smooth}
 img{max-width:100%}
+.sb-io .sb-reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.sb-io .sb-d1{transition-delay:.1s}.sb-io .sb-d2{transition-delay:.2s}
+.sb-io .sb-reveal.sb-in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.sb-io .sb-reveal{opacity:1;transform:none;transition:none}}
 </style>
+<script>if(!(window.CSS&&CSS.supports&&CSS.supports('animation-timeline: view()'))&&'IntersectionObserver' in window){document.documentElement.classList.add('sb-io')}</script>
 </head>
 <body>
 <div style="width: 100%; background: #FAFAF8; color: #18181B; font-family: 'Outfit', system-ui, sans-serif; font-size: 18px; line-height: 1.55">
@@ -42,9 +58,9 @@ img{max-width:100%}
 </header>
 
 <section id="top" style="max-width: 1200px; margin: 0 auto; padding: clamp(56px, 8vw, 112px) clamp(16px, 4vw, 40px) clamp(72px, 9vw, 120px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
-<h1 style="margin: 0; font-weight: 600; font-size: clamp(38px, 4.6vw, 66px); line-height: 1.16; letter-spacing: -0.03em; max-width: 17em">I help <span style="text-decoration: underline wavy #4B38C4; text-decoration-thickness: 0.05em; text-underline-offset: 0.22em">startups</span> and <span style="background: linear-gradient(transparent 55%, #DCD6F8 55%); padding: 0 0.08em; -webkit-box-decoration-break: clone; box-decoration-break: clone">small businesses</span> turn ideas into practical digital solutions.</h1>
-<p style="margin: 0; font-size: clamp(19px, 1.7vw, 22px); color: #5B5B63; max-width: 32em">Through product strategy and design, rapid app development, and AI business innovation.</p>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; padding-top: 8px">
+<h1 aria-label="I help startups and small businesses turn ideas into practical digital solutions." style="margin: 0; font-weight: 600; font-size: clamp(38px, 4.6vw, 66px); line-height: 1.16; letter-spacing: -0.03em; max-width: 17em"><span aria-hidden="true"><span class="sb-c" style="animation-delay: 300ms, 300ms; animation-duration: 1ms, 64ms">I</span> <span class="sb-c" style="animation-delay: 364ms, 364ms">h</span><span class="sb-c" style="animation-delay: 396ms, 396ms">e</span><span class="sb-c" style="animation-delay: 428ms, 428ms">l</span><span class="sb-c" style="animation-delay: 460ms, 460ms; animation-duration: 1ms, 64ms">p</span> <span style="position: relative; display: inline-block"><span class="sb-c" style="animation-delay: 524ms, 524ms">s</span><span class="sb-c" style="animation-delay: 556ms, 556ms">t</span><span class="sb-c" style="animation-delay: 588ms, 588ms">a</span><span class="sb-c" style="animation-delay: 620ms, 620ms">r</span><span class="sb-c" style="animation-delay: 652ms, 652ms">t</span><span class="sb-c" style="animation-delay: 684ms, 684ms">u</span><span class="sb-c" style="animation-delay: 716ms, 716ms">p</span><span class="sb-c" style="animation-delay: 748ms, 748ms; animation-duration: 1ms, 64ms">s</span><svg aria-hidden="true" viewBox="0 0 100 10" preserveAspectRatio="none" style="position: absolute; left: 0; top: 1.08em; width: 100%; height: 0.18em; overflow: visible; animation: sb-wipe 650ms ease-out 3042ms both"><path d="M0 5 Q 3.125 0 6.25 5 T 12.5 5 T 18.8 5 T 25 5 T 31.2 5 T 37.5 5 T 43.8 5 T 50 5 T 56.2 5 T 62.5 5 T 68.8 5 T 75 5 T 81.2 5 T 87.5 5 T 93.8 5 T 100 5" fill="none" stroke="#4B38C4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg></span> <span class="sb-c" style="animation-delay: 812ms, 812ms">a</span><span class="sb-c" style="animation-delay: 844ms, 844ms">n</span><span class="sb-c" style="animation-delay: 876ms, 876ms; animation-duration: 1ms, 64ms">d</span> <span style="background-image: linear-gradient(#DCD6F8, #DCD6F8); background-repeat: no-repeat; background-position: 0 100%; background-size: 100% 45%; padding: 0 0.04em; -webkit-box-decoration-break: clone; box-decoration-break: clone; animation: sb-hl 650ms ease-out 3692ms both"><span class="sb-c" style="animation-delay: 940ms, 940ms">s</span><span class="sb-c" style="animation-delay: 972ms, 972ms">m</span><span class="sb-c" style="animation-delay: 1004ms, 1004ms">a</span><span class="sb-c" style="animation-delay: 1036ms, 1036ms">l</span><span class="sb-c" style="animation-delay: 1068ms, 1068ms; animation-duration: 1ms, 64ms">l</span> <span class="sb-c" style="animation-delay: 1132ms, 1132ms">b</span><span class="sb-c" style="animation-delay: 1164ms, 1164ms">u</span><span class="sb-c" style="animation-delay: 1196ms, 1196ms">s</span><span class="sb-c" style="animation-delay: 1228ms, 1228ms">i</span><span class="sb-c" style="animation-delay: 1260ms, 1260ms">n</span><span class="sb-c" style="animation-delay: 1292ms, 1292ms">e</span><span class="sb-c" style="animation-delay: 1324ms, 1324ms">s</span><span class="sb-c" style="animation-delay: 1356ms, 1356ms">s</span><span class="sb-c" style="animation-delay: 1388ms, 1388ms">e</span><span class="sb-c" style="animation-delay: 1420ms, 1420ms; animation-duration: 1ms, 64ms">s</span></span> <span class="sb-c" style="animation-delay: 1484ms, 1484ms">t</span><span class="sb-c" style="animation-delay: 1516ms, 1516ms">u</span><span class="sb-c" style="animation-delay: 1548ms, 1548ms">r</span><span class="sb-c" style="animation-delay: 1580ms, 1580ms; animation-duration: 1ms, 64ms">n</span> <span class="sb-c" style="animation-delay: 1644ms, 1644ms">i</span><span class="sb-c" style="animation-delay: 1676ms, 1676ms">d</span><span class="sb-c" style="animation-delay: 1708ms, 1708ms">e</span><span class="sb-c" style="animation-delay: 1740ms, 1740ms">a</span><span class="sb-c" style="animation-delay: 1772ms, 1772ms; animation-duration: 1ms, 64ms">s</span> <span class="sb-c" style="animation-delay: 1836ms, 1836ms">i</span><span class="sb-c" style="animation-delay: 1868ms, 1868ms">n</span><span class="sb-c" style="animation-delay: 1900ms, 1900ms">t</span><span class="sb-c" style="animation-delay: 1932ms, 1932ms; animation-duration: 1ms, 64ms">o</span> <span class="sb-c" style="animation-delay: 1996ms, 1996ms">p</span><span class="sb-c" style="animation-delay: 2028ms, 2028ms">r</span><span class="sb-c" style="animation-delay: 2060ms, 2060ms">a</span><span class="sb-c" style="animation-delay: 2092ms, 2092ms">c</span><span class="sb-c" style="animation-delay: 2124ms, 2124ms">t</span><span class="sb-c" style="animation-delay: 2156ms, 2156ms">i</span><span class="sb-c" style="animation-delay: 2188ms, 2188ms">c</span><span class="sb-c" style="animation-delay: 2220ms, 2220ms">a</span><span class="sb-c" style="animation-delay: 2252ms, 2252ms; animation-duration: 1ms, 64ms">l</span> <span class="sb-c" style="animation-delay: 2316ms, 2316ms">d</span><span class="sb-c" style="animation-delay: 2348ms, 2348ms">i</span><span class="sb-c" style="animation-delay: 2380ms, 2380ms">g</span><span class="sb-c" style="animation-delay: 2412ms, 2412ms">i</span><span class="sb-c" style="animation-delay: 2444ms, 2444ms">t</span><span class="sb-c" style="animation-delay: 2476ms, 2476ms">a</span><span class="sb-c" style="animation-delay: 2508ms, 2508ms; animation-duration: 1ms, 64ms">l</span> <span class="sb-c" style="animation-delay: 2572ms, 2572ms">s</span><span class="sb-c" style="animation-delay: 2604ms, 2604ms">o</span><span class="sb-c" style="animation-delay: 2636ms, 2636ms">l</span><span class="sb-c" style="animation-delay: 2668ms, 2668ms">u</span><span class="sb-c" style="animation-delay: 2700ms, 2700ms">t</span><span class="sb-c" style="animation-delay: 2732ms, 2732ms">i</span><span class="sb-c" style="animation-delay: 2764ms, 2764ms">o</span><span class="sb-c" style="animation-delay: 2796ms, 2796ms">n</span><span class="sb-c" style="animation-delay: 2828ms, 2828ms">s</span><span class="sb-c sb-last" style="animation-delay: 2860ms, 2860ms">.</span></span></h1>
+<p style="margin: 0; font-size: clamp(19px, 1.7vw, 22px); color: #5B5B63; max-width: 32em; animation: sb-up 700ms ease-out 3050ms both">Through product strategy and design, rapid app development, and AI business innovation.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; padding-top: 8px; animation: sb-up 700ms ease-out 3250ms both">
 <a href="#contact" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 999px; background: #4B38C4; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 17px">Get in touch</a>
 <a href="#services" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 999px; border: 1.5px solid #18181B; color: #18181B; text-decoration: none; font-weight: 600; font-size: 17px; box-sizing: border-box">What I do</a>
 </div>
@@ -52,12 +68,12 @@ img{max-width:100%}
 
 <section id="services" style="border-top: 1px solid #E5E4DF">
 <div style="max-width: 1200px; margin: 0 auto; padding: 104px clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 48px; box-sizing: border-box">
-<div style="display: flex; flex-direction: column; gap: 12px">
+<div class="sb-reveal" style="display: flex; flex-direction: column; gap: 12px">
 <p style="margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4B38C4">What I do</p>
 <h2 style="margin: 0; font-weight: 600; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.1; letter-spacing: -0.02em">Three ways I can help</h2>
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 24px">
-<article style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
+<article class="sb-reveal" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #4B38C4; display: flex; align-items: center; justify-content: center">
 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
 </div>
@@ -70,7 +86,7 @@ img{max-width:100%}
 </div>
 </div>
 </article>
-<article style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
+<article class="sb-reveal sb-d1" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #4B38C4; display: flex; align-items: center; justify-content: center">
 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
 </div>
@@ -84,7 +100,7 @@ img{max-width:100%}
 </div>
 </div>
 </article>
-<article style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
+<article class="sb-reveal sb-d2" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #4B38C4; display: flex; align-items: center; justify-content: center">
 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"></path><path d="M19 3v4"></path><path d="M21 5h-4"></path></svg>
 </div>
@@ -103,8 +119,8 @@ img{max-width:100%}
 
 <section id="about" style="border-top: 1px solid #E5E4DF">
 <div style="max-width: 1200px; margin: 0 auto; padding: 104px clamp(16px, 4vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 48px 72px; box-sizing: border-box">
-<img src="assets/bengisu.jpg" loading="lazy" alt="Portrait of Bengisu, founder of Studio Seba" style="flex: 0 0 auto; width: clamp(160px, 22vw, 300px); aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 50%; border-radius: 28px; display: block; background: #EFEEEA">
-<div style="flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<img class="sb-reveal" src="assets/bengisu.jpg" loading="lazy" alt="Portrait of Bengisu, founder of Studio Seba" style="flex: 0 0 auto; width: clamp(160px, 22vw, 300px); aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 50%; border-radius: 28px; display: block; background: #EFEEEA">
+<div class="sb-reveal sb-d1" style="flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
 <p style="margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4B38C4">About</p>
 <h2 style="margin: 0; font-weight: 600; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.1; letter-spacing: -0.02em">Hi, I'm Bengisu.</h2>
 <p style="margin: 0; color: #5B5B63; max-width: 34em">I'm a product designer and strategist with 10 years of experience across banking and startups. I spent 8 years at Bank of America and Citi, moving from analytics into UX and launching investing products at Citibank. My first studio client was CereHive, an AI-native recruiting platform, where I took the product from 0 to 1.</p>
@@ -120,12 +136,12 @@ img{max-width:100%}
 
 <section id="testimonials" style="background: #F3F2EE; border-top: 1px solid #E5E4DF; border-bottom: 1px solid #E5E4DF">
 <div style="max-width: 1200px; margin: 0 auto; padding: 104px clamp(16px, 4vw, 40px); display: flex; flex-direction: column; gap: 48px; box-sizing: border-box">
-<div style="display: flex; flex-direction: column; gap: 12px">
+<div class="sb-reveal" style="display: flex; flex-direction: column; gap: 12px">
 <p style="margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4B38C4">Testimonials</p>
 <h2 style="margin: 0; font-weight: 600; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.1; letter-spacing: -0.02em">What people say</h2>
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 24px">
-<figure style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
+<figure class="sb-reveal" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
 <svg width="40" height="31" viewBox="0 0 36 28" fill="#4B38C4" aria-hidden="true"><path d="M0 28V16.8C0 7.5 5.3 1.9 14 0l1.6 4.2C10.8 5.8 8.4 8.8 8 13h7v15H0zm20 0V16.8C20 7.5 25.3 1.9 34 0l1.6 4.2C30.8 5.8 28.4 8.8 28 13h7v15H20z"></path></svg>
 <blockquote style="margin: 0; font-size: clamp(19px, 1.7vw, 22px); line-height: 1.5; font-weight: 500">Bengisu was our Founding Designer and took CereHive from 0 to 1. She worked side by side with our users to make the product genuinely intuitive, and it showed: our demos got sharper and we started landing more clients. She’s the kind of designer every early-stage team hopes to find.</blockquote>
 <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid #E5E4DF">
@@ -133,7 +149,7 @@ img{max-width:100%}
 <span style="display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 17px">Matt Taylert</span><span style="font-size: 15px; color: #5B5B63">CTO, CereHive</span></span>
 </figcaption>
 </figure>
-<figure style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
+<figure class="sb-reveal sb-d1" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
 <svg width="40" height="31" viewBox="0 0 36 28" fill="#4B38C4" aria-hidden="true"><path d="M0 28V16.8C0 7.5 5.3 1.9 14 0l1.6 4.2C10.8 5.8 8.4 8.8 8 13h7v15H0zm20 0V16.8C20 7.5 25.3 1.9 34 0l1.6 4.2C30.8 5.8 28.4 8.8 28 13h7v15H20z"></path></svg>
 <blockquote style="margin: 0; font-size: clamp(19px, 1.7vw, 22px); line-height: 1.5; font-weight: 500">At Citi, Bengisu took on dense, regulated, high-stakes workflows other teams had circled for years, and made them feel obvious. She sees the whole system before anyone else in the room, yet still obsesses over a single interaction until it’s right. If you get the chance to work with her, don’t overthink it.</blockquote>
 <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid #E5E4DF">
@@ -141,7 +157,7 @@ img{max-width:100%}
 <span style="display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 17px">Chris Worley</span><span style="font-size: 15px; color: #5B5B63">Head of Wealth Design, Citibank</span></span>
 </figcaption>
 </figure>
-<figure style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
+<figure class="sb-reveal sb-d2" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
 <svg width="40" height="31" viewBox="0 0 36 28" fill="#4B38C4" aria-hidden="true"><path d="M0 28V16.8C0 7.5 5.3 1.9 14 0l1.6 4.2C10.8 5.8 8.4 8.8 8 13h7v15H0zm20 0V16.8C20 7.5 25.3 1.9 34 0l1.6 4.2C30.8 5.8 28.4 8.8 28 13h7v15H20z"></path></svg>
 <blockquote style="margin: 0; font-size: clamp(19px, 1.7vw, 22px); line-height: 1.5; font-weight: 500">I cannot say enough how fantastic my new website is: beautiful, thoughtful, stunning and helpful, from the colors to the font. Bengisu and her team were with me from the first seed of an idea to when matchmaking became my full-time job, guiding me through everything. They’re the team I would choose every single time.</blockquote>
 <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid #E5E4DF">
@@ -153,7 +169,7 @@ img{max-width:100%}
 </div>
 </section>
 
-<section id="contact" style="max-width: 1200px; margin: 0 auto; padding: 120px clamp(16px, 4vw, 40px); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; box-sizing: border-box">
+<section id="contact" class="sb-reveal" style="max-width: 1200px; margin: 0 auto; padding: 120px clamp(16px, 4vw, 40px); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; box-sizing: border-box">
 <p style="margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4B38C4">Contact</p>
 <h2 style="margin: 0; font-weight: 600; font-size: clamp(34px, 4.4vw, 60px); line-height: 1.08; letter-spacing: -0.025em; max-width: 14em">Have an idea? Let's bring it to life.</h2>
 <p style="margin: 0; font-size: 19px; color: #5B5B63; max-width: 30em">Tell me what you're working on and I'll get back to you.</p>
@@ -177,5 +193,6 @@ img{max-width:100%}
 </footer>
 
 </div>
+<script>(function(){if(!document.documentElement.classList.contains('sb-io'))return;var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('sb-in');o.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});document.querySelectorAll('.sb-reveal').forEach(function(el){o.observe(el)})})();</script>
 </body>
 </html>
