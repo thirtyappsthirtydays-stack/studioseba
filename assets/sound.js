@@ -1,0 +1,186 @@
+/* Studio Seba: optional sound for the headline intro.
+   Typewriter clicks while the headline types, a pencil scribble for the wavy
+   underline, a marker swipe for the highlighter, and a sparkle at the end.
+   All sounds are synthesised with the Web Audio API (no audio files).
+   Browsers only allow audio after a click, so sound is off until the visitor
+   presses the #sb-sound button, which replays the intro with sound. */
+(function () {
+  'use strict';
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) {
+    document.documentElement.classList.add('sb-nosound');
+    return;
+  }
+
+  var ctx = null, master = null, noise = null, sources = [], on = false, endTimer = null;
+
+  function makeNoise(c) {
+    var len = Math.floor(c.sampleRate * 2), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    return buf;
+  }
+
+  function env(g, t, peak, attack, decay) {
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay);
+  }
+
+  function noiseSrc(c, buf, t, dur, track) {
+    var s = c.createBufferSource();
+    s.buffer = buf;
+    s.start(t, Math.random() * 1.2, dur);
+    if (track) track.push(s);
+    return s;
+  }
+
+  /* --- the four sounds ---------------------------------------------------- */
+
+  function typeClick(c, out, buf, t, amp, track) {
+    var s = noiseSrc(c, buf, t, 0.05, track);
+    var bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2600 + Math.random() * 1600; bp.Q.value = 1.4;
+    var g = c.createGain(); env(g, t, amp, 0.002, 0.028);
+    s.connect(bp); bp.connect(g); g.connect(out);
+    var o = c.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(190 + Math.random() * 60, t);
+    o.frequency.exponentialRampToValueAtTime(90, t + 0.05);
+    var g2 = c.createGain(); env(g2, t, amp * 0.45, 0.002, 0.045);
+    o.connect(g2); g2.connect(out); o.start(t); o.stop(t + 0.08);
+    if (track) track.push(o);
+  }
+
+  function pencil(c, out, buf, t, dur, track) {
+    var s = noiseSrc(c, buf, t, dur + 0.1, track);
+    var hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1800;
+    var bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 0.9;
+    var g = c.createGain(); g.gain.setValueAtTime(0.0001, t);
+    var strokes = 16, step = dur / strokes;
+    for (var k = 0; k < strokes; k++) {
+      var tk = t + k * step;
+      bp.frequency.setValueAtTime(k % 2 ? 3200 : 4300, tk);
+      g.gain.setTargetAtTime(k % 2 ? 0.16 : 0.24, tk, step * 0.25);
+      g.gain.setTargetAtTime(0.05, tk + step * 0.6, step * 0.2);
+    }
+    g.gain.setTargetAtTime(0.0001, t + dur, 0.03);
+    s.connect(hp); hp.connect(bp); bp.connect(g); g.connect(out);
+  }
+
+  function marker(c, out, buf, t, dur, track) {
+    var s = noiseSrc(c, buf, t, dur + 0.2, track);
+    var bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 0.7;
+    bp.frequency.setValueAtTime(800, t); bp.frequency.linearRampToValueAtTime(1500, t + dur);
+    var lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3200;
+    var g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.32, t + 0.08);
+    g.gain.setValueAtTime(0.32, t + dur - 0.12);
+    g.gain.linearRampToValueAtTime(0.0001, t + dur);
+    s.connect(bp); bp.connect(lp); lp.connect(g); g.connect(out);
+  }
+
+  function sparkle(c, out, buf, t, track) {
+    var notes = [1760, 2217.46, 2637.02, 3520];
+    for (var i = 0; i < notes.length; i++) {
+      var ti = t + i * 0.075;
+      [[1, 0.11], [2.01, 0.035]].forEach(function (p) {
+        var o = c.createOscillator(); o.type = 'sine'; o.frequency.value = notes[i] * p[0];
+        var g = c.createGain(); env(g, ti, p[1], 0.004, 0.9);
+        o.connect(g); g.connect(out); o.start(ti); o.stop(ti + 1.0);
+        if (track) track.push(o);
+      });
+    }
+    var s = noiseSrc(c, buf, t, 0.5, track);
+    var hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 6500;
+    var g = c.createGain(); env(g, t, 0.05, 0.01, 0.35);
+    s.connect(hp); hp.connect(g); g.connect(out);
+  }
+
+  /* --- timing, read from the animation already on the page ---------------- */
+
+  function ms(v) { return parseFloat(String(v).split(',')[0]) * (String(v).indexOf('ms') > -1 ? 1 : 1000) || 0; }
+
+  function plan() {
+    var h1 = document.querySelector('#top h1');
+    if (!h1) return null;
+    var chars = [].slice.call(h1.querySelectorAll('.sb-c')).map(function (el) { return ms(el.style.animationDelay); });
+    var wave = h1.querySelector('.sb-wave'), hl = h1.querySelector('.sb-hl');
+    var p = {
+      chars: chars,
+      wave: wave ? [ms(wave.style.animationDelay), ms(wave.style.animationDuration)] : null,
+      hl: hl ? [ms(hl.style.animationDelay), ms(hl.style.animationDuration)] : null
+    };
+    var last = p.hl ? p.hl[0] + p.hl[1] : (chars.length ? chars[chars.length - 1] : 0);
+    p.star = last + 150;
+    return p;
+  }
+
+  function schedule(c, out, buf, t0, p, track) {
+    p.chars.forEach(function (d, i) {
+      if (i % 2) return; // a click on every other letter reads as fast, natural typing
+      typeClick(c, out, buf, t0 + d / 1000 + (Math.random() - 0.5) * 0.008, 0.32 + Math.random() * 0.18, track);
+    });
+    if (p.wave) pencil(c, out, buf, t0 + p.wave[0] / 1000, p.wave[1] / 1000, track);
+    if (p.hl) marker(c, out, buf, t0 + p.hl[0] / 1000, p.hl[1] / 1000, track);
+    sparkle(c, out, buf, t0 + p.star / 1000, track);
+    return p.star + 1300;
+  }
+
+  /* --- playback ----------------------------------------------------------- */
+
+  function restartHeadline() {
+    var h1 = document.querySelector('#top h1');
+    if (!h1 || !h1.getAnimations) return;
+    h1.getAnimations({ subtree: true }).forEach(function (a) {
+      try { a.cancel(); a.play(); } catch (e) {}
+    });
+  }
+
+  function stopAll() {
+    clearTimeout(endTimer);
+    if (master && ctx) master.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.02);
+    var now = ctx ? ctx.currentTime : 0;
+    sources.forEach(function (s) { try { s.stop(now + 0.08); } catch (e) {} });
+    sources = [];
+  }
+
+  function setButton(btn, state) {
+    if (btn) btn.setAttribute('data-on', state ? 'true' : 'false');
+  }
+
+  function start(btn) {
+    var p = plan();
+    if (!p) return;
+    if (!ctx) {
+      ctx = new AC();
+      master = ctx.createGain();
+      master.connect(ctx.destination);
+      noise = makeNoise(ctx);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    stopAll();
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.setValueAtTime(0.7, ctx.currentTime);
+    restartHeadline();
+    var total = schedule(ctx, master, noise, ctx.currentTime + 0.03, p, sources);
+    on = true;
+    setButton(btn, true);
+    endTimer = setTimeout(function () { on = false; setButton(btn, false); }, total);
+  }
+
+  function stop(btn) {
+    on = false;
+    stopAll();
+    setButton(btn, false);
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('#sb-sound') : null;
+    if (!btn) return;
+    if (on) stop(btn); else start(btn);
+  });
+
+  // For previews and tests: render the full intro into any (offline) audio context.
+  window.StudioSebaSound = {
+    plan: plan,
+    render: function (c, p) { return schedule(c, c.destination, makeNoise(c), 0.05, p || plan(), null); }
+  };
+})();
