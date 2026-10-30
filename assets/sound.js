@@ -36,16 +36,44 @@
 
   /* --- the four sounds ---------------------------------------------------- */
 
-  function typeClick(c, out, buf, t, amp, track) {
-    var s = noiseSrc(c, buf, t, 0.05, track);
-    var bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2600 + Math.random() * 1600; bp.Q.value = 1.4;
-    var g = c.createGain(); env(g, t, amp, 0.002, 0.028);
-    s.connect(bp); bp.connect(g); g.connect(out);
-    var o = c.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(190 + Math.random() * 60, t);
-    o.frequency.exponentialRampToValueAtTime(90, t + 0.05);
-    var g2 = c.createGain(); env(g2, t, amp * 0.45, 0.002, 0.045);
-    o.connect(g2); g2.connect(out); o.start(t); o.stop(t + 0.08);
+  // One filtered noise burst: the building block of a key sound.
+  function tick(c, out, buf, t, type, freq, q, peak, decay, track) {
+    var s = noiseSrc(c, buf, t, decay + 0.03, track);
+    var f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+    var g = c.createGain(); env(g, t, peak, 0.0015, decay);
+    s.connect(f); f.connect(g); g.connect(out);
+  }
+
+  // A short pitched knock, the "thock" of a key bottoming out.
+  function knock(c, out, t, f0, f1, peak, decay, track) {
+    var o = c.createOscillator(); o.type = 'sine';
+    o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + decay);
+    var g = c.createGain(); env(g, t, peak, 0.002, decay);
+    o.connect(g); g.connect(out); o.start(t); o.stop(t + decay + 0.02);
     if (track) track.push(o);
+  }
+
+  // A letter key: a sharp press click, a plastic keycap body, a soft thock,
+  // then a quieter release click a few hundredths of a second later.
+  function keystroke(c, out, buf, t, track) {
+    var v = 0.65 + Math.random() * 0.35, p = 0.88 + Math.random() * 0.24;
+    tick(c, out, buf, t, 'highpass', 2400 * p, 0.7, 0.42 * v, 0.006, track);
+    tick(c, out, buf, t + 0.001, 'bandpass', 1250 * p, 3.2, 0.5 * v, 0.022, track);
+    knock(c, out, t + 0.002, 210 * p, 120 * p, 0.16 * v, 0.03, track);
+    var r = t + 0.05 + Math.random() * 0.03;
+    tick(c, out, buf, r, 'highpass', 3200 * p, 0.7, 0.13 * v, 0.005, track);
+    tick(c, out, buf, r, 'bandpass', 1700 * p, 2.5, 0.12 * v, 0.012, track);
+  }
+
+  // The spacebar: deeper and a little louder, with a slight stabiliser rattle.
+  function spacebar(c, out, buf, t, track) {
+    var v = 0.8 + Math.random() * 0.2;
+    tick(c, out, buf, t, 'highpass', 1800, 0.7, 0.34 * v, 0.007, track);
+    tick(c, out, buf, t + 0.001, 'bandpass', 520, 1.8, 0.55 * v, 0.045, track);
+    knock(c, out, t + 0.002, 150, 85, 0.24 * v, 0.05, track);
+    tick(c, out, buf, t + 0.012, 'bandpass', 2600, 3, 0.08 * v, 0.008, track);
+    var r = t + 0.075 + Math.random() * 0.025;
+    tick(c, out, buf, r, 'bandpass', 900, 2, 0.16 * v, 0.016, track);
   }
 
   function pencil(c, out, buf, t, dur, track) {
@@ -102,9 +130,16 @@
     var h1 = document.querySelector('#top h1');
     if (!h1) return null;
     var chars = [].slice.call(h1.querySelectorAll('.sb-c')).map(function (el) { return ms(el.style.animationDelay); });
+    // which letters are followed by a space, read from the headline's full text
+    var label = h1.getAttribute('aria-label') || '', spaceAfter = [], k = 0;
+    for (var i = 0; i < label.length; i++) {
+      if (label[i] === ' ') continue;
+      spaceAfter[k++] = label[i + 1] === ' ';
+    }
     var wave = h1.querySelector('.sb-wave'), hl = h1.querySelector('.sb-hl');
     var p = {
       chars: chars,
+      spaceAfter: spaceAfter,
       wave: wave ? [ms(wave.style.animationDelay), ms(wave.style.animationDuration)] : null,
       hl: hl ? [ms(hl.style.animationDelay), ms(hl.style.animationDuration)] : null
     };
@@ -114,9 +149,20 @@
   }
 
   function schedule(c, out, buf, t0, p, track) {
+    // Letters appear faster than anyone types, so keys sound at most every
+    // ~65ms (about 15 a second, a quick typist), with a spacebar between words.
+    var last = -1, n = p.chars.length;
     p.chars.forEach(function (d, i) {
-      if (i % 2) return; // a click on every other letter reads as fast, natural typing
-      typeClick(c, out, buf, t0 + d / 1000 + (Math.random() - 0.5) * 0.008, 0.32 + Math.random() * 0.18, track);
+      var t = d / 1000;
+      if (t - last >= 0.065) {
+        keystroke(c, out, buf, t0 + t + Math.random() * 0.006, track);
+        last = t;
+      }
+      if (p.spaceAfter && p.spaceAfter[i] && i + 1 < n) {
+        var ts = (d + p.chars[i + 1]) / 2000;
+        spacebar(c, out, buf, t0 + ts, track);
+        last = ts;
+      }
     });
     if (p.wave) pencil(c, out, buf, t0 + p.wave[0] / 1000, p.wave[1] / 1000, track);
     if (p.hl) marker(c, out, buf, t0 + p.hl[0] / 1000, p.hl[1] / 1000, track);
