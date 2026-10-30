@@ -30,7 +30,9 @@ a{color:#4B38C4}a:hover{color:#3A2A9E}
 .sb-c{animation:sb-type 1ms linear both,sb-caret 32ms step-end}
 .sb-last{animation:sb-type 1ms linear both,sb-blink 900ms step-end 3}
 @supports (animation-timeline: view()){.sb-reveal{animation:sb-rise linear both;animation-timeline:view();animation-range:entry 0% cover 20%}.sb-d1{animation-range:entry 6% cover 26%}.sb-d2{animation-range:entry 12% cover 32%}}
-@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+.sb-js .sb-seq{opacity:0;transform:translateY(36px);transition:opacity 900ms ease,transform 900ms cubic-bezier(.2,.7,.2,1)}
+.sb-js .sb-seq.sb-in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}.sb-js .sb-seq{opacity:1;transform:none}}
 </style>
 <style>
 html{scroll-behavior:smooth}
@@ -40,7 +42,7 @@ img{max-width:100%}
 .sb-io .sb-reveal.sb-in{opacity:1;transform:none}
 @media (prefers-reduced-motion: reduce){.sb-io .sb-reveal{opacity:1;transform:none;transition:none}}
 </style>
-<script>if(!(window.CSS&&CSS.supports&&CSS.supports('animation-timeline: view()'))&&'IntersectionObserver' in window){document.documentElement.classList.add('sb-io')}</script>
+<script>if('IntersectionObserver' in window){document.documentElement.classList.add('sb-js')}if(!(window.CSS&&CSS.supports&&CSS.supports('animation-timeline: view()'))&&'IntersectionObserver' in window){document.documentElement.classList.add('sb-io')}</script>
 </head>
 <body>
 <div style="width: 100%; background: #FAFAF8; color: #18181B; font-family: 'Outfit', system-ui, sans-serif; font-size: 18px; line-height: 1.55">
@@ -73,7 +75,7 @@ img{max-width:100%}
 <h2 style="margin: 0; font-weight: 600; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.1; letter-spacing: -0.02em">Three ways I can help</h2>
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 24px">
-<article class="sb-reveal" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
+<article class="sb-seq" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #4B38C4; display: flex; align-items: center; justify-content: center">
 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
 </div>
@@ -86,7 +88,7 @@ img{max-width:100%}
 </div>
 </div>
 </article>
-<article class="sb-reveal sb-d1" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
+<article class="sb-seq" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #4B38C4; display: flex; align-items: center; justify-content: center">
 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
 </div>
@@ -100,7 +102,7 @@ img{max-width:100%}
 </div>
 </div>
 </article>
-<article class="sb-reveal sb-d2" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
+<article class="sb-seq" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box">
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #4B38C4; display: flex; align-items: center; justify-content: center">
 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"></path><path d="M19 3v4"></path><path d="M21 5h-4"></path></svg>
 </div>
@@ -141,7 +143,7 @@ img{max-width:100%}
 <h2 style="margin: 0; font-weight: 600; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.1; letter-spacing: -0.02em">What people say</h2>
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 24px">
-<figure class="sb-reveal" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
+<figure class="sb-seq" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
 <svg width="40" height="31" viewBox="0 0 36 28" fill="#4B38C4" aria-hidden="true"><path d="M0 28V16.8C0 7.5 5.3 1.9 14 0l1.6 4.2C10.8 5.8 8.4 8.8 8 13h7v15H0zm20 0V16.8C20 7.5 25.3 1.9 34 0l1.6 4.2C30.8 5.8 28.4 8.8 28 13h7v15H20z"></path></svg>
 <blockquote style="margin: 0; font-size: clamp(19px, 1.7vw, 22px); line-height: 1.5; font-weight: 500">Bengisu was our Founding Designer and took CereHive from 0 to 1. She worked side by side with our users to make the product genuinely intuitive, and it showed: our demos got sharper and we started landing more clients. She’s the kind of designer every early-stage team hopes to find.</blockquote>
 <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid #E5E4DF">
@@ -149,7 +151,7 @@ img{max-width:100%}
 <span style="display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 17px">Matt Taylert</span><span style="font-size: 15px; color: #5B5B63">CTO, CereHive</span></span>
 </figcaption>
 </figure>
-<figure class="sb-reveal sb-d1" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
+<figure class="sb-seq" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
 <svg width="40" height="31" viewBox="0 0 36 28" fill="#4B38C4" aria-hidden="true"><path d="M0 28V16.8C0 7.5 5.3 1.9 14 0l1.6 4.2C10.8 5.8 8.4 8.8 8 13h7v15H0zm20 0V16.8C20 7.5 25.3 1.9 34 0l1.6 4.2C30.8 5.8 28.4 8.8 28 13h7v15H20z"></path></svg>
 <blockquote style="margin: 0; font-size: clamp(19px, 1.7vw, 22px); line-height: 1.5; font-weight: 500">At Citi, Bengisu took on dense, regulated, high-stakes workflows other teams had circled for years, and made them feel obvious. She sees the whole system before anyone else in the room, yet still obsesses over a single interaction until it’s right. If you get the chance to work with her, don’t overthink it.</blockquote>
 <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid #E5E4DF">
@@ -157,7 +159,7 @@ img{max-width:100%}
 <span style="display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 17px">Chris Worley</span><span style="font-size: 15px; color: #5B5B63">Head of Wealth Design, Citibank</span></span>
 </figcaption>
 </figure>
-<figure class="sb-reveal sb-d2" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
+<figure class="sb-seq" style="flex: 1 1 300px; min-width: 0; margin: 0; background: #FFFFFF; border: 1px solid #E5E4DF; border-radius: 28px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
 <svg width="40" height="31" viewBox="0 0 36 28" fill="#4B38C4" aria-hidden="true"><path d="M0 28V16.8C0 7.5 5.3 1.9 14 0l1.6 4.2C10.8 5.8 8.4 8.8 8 13h7v15H0zm20 0V16.8C20 7.5 25.3 1.9 34 0l1.6 4.2C30.8 5.8 28.4 8.8 28 13h7v15H20z"></path></svg>
 <blockquote style="margin: 0; font-size: clamp(19px, 1.7vw, 22px); line-height: 1.5; font-weight: 500">I cannot say enough how fantastic my new website is: beautiful, thoughtful, stunning and helpful, from the colors to the font. Bengisu and her team were with me from the first seed of an idea to when matchmaking became my full-time job, guiding me through everything. They’re the team I would choose every single time.</blockquote>
 <figcaption style="margin-top: auto; display: flex; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid #E5E4DF">
@@ -194,5 +196,6 @@ img{max-width:100%}
 
 </div>
 <script>(function(){if(!document.documentElement.classList.contains('sb-io'))return;var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('sb-in');o.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});document.querySelectorAll('.sb-reveal').forEach(function(el){o.observe(el)})})();</script>
+<script>(function(){if(!('IntersectionObserver' in window))return;var io=new IntersectionObserver(function(es){var s=es.filter(function(e){return e.isIntersecting});s.sort(function(a,b){var dy=Math.round(a.boundingClientRect.top)-Math.round(b.boundingClientRect.top);return Math.abs(dy)>8?dy:a.boundingClientRect.left-b.boundingClientRect.left});s.forEach(function(e,i){e.target.style.transitionDelay=(i*450)+'ms';e.target.classList.add('sb-in');io.unobserve(e.target)})},{threshold:0.2});document.querySelectorAll('.sb-seq').forEach(function(el){io.observe(el)})})();</script>
 </body>
 </html>
