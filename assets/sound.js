@@ -2,8 +2,8 @@
    Typewriter clicks while the headline types, a pencil scribble for the wavy
    underline, a marker swipe for the highlighter, and a sparkle at the end.
    All sounds are synthesised with the Web Audio API (no audio files).
-   Browsers only allow audio after a click, so sound is off until the visitor
-   presses the #sb-sound button, which replays the intro with sound. */
+   The intro starts with sound when the browser allows it; otherwise the
+   #sb-sound toggle (top right) replays it with sound. Muting is remembered. */
 (function () {
   'use strict';
   var AC = window.AudioContext || window.webkitAudioContext;
@@ -12,7 +12,7 @@
     return;
   }
 
-  var ctx = null, master = null, noise = null, sources = [], on = false, endTimer = null;
+  var ctx = null, master = null, noise = null, sources = [], on = false;
 
   function makeNoise(c) {
     var len = Math.floor(c.sampleRate * 2), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
@@ -181,48 +181,72 @@
   }
 
   function stopAll() {
-    clearTimeout(endTimer);
     if (master && ctx) master.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.02);
     var now = ctx ? ctx.currentTime : 0;
     sources.forEach(function (s) { try { s.stop(now + 0.08); } catch (e) {} });
     sources = [];
   }
 
-  function setButton(btn, state) {
-    if (btn) btn.setAttribute('data-on', state ? 'true' : 'false');
+  // Remember a visitor's choice. Storage can be unavailable, so never rely on it.
+  function getPref() { try { return localStorage.getItem('sb-sound'); } catch (e) { return null; } }
+  function setPref(v) { try { localStorage.setItem('sb-sound', v); } catch (e) {} }
+
+  function button() { return document.getElementById('sb-sound'); }
+
+  function setButton(state) {
+    var btn = button();
+    if (!btn) return;
+    btn.setAttribute('data-on', state ? 'true' : 'false');
+    btn.setAttribute('aria-pressed', state ? 'true' : 'false');
   }
 
-  function start(btn) {
-    var p = plan();
-    if (!p) return;
+  function ensureContext() {
     if (!ctx) {
       ctx = new AC();
       master = ctx.createGain();
+      master.gain.value = 0.0001;
       master.connect(ctx.destination);
       noise = makeNoise(ctx);
     }
+    return ctx;
+  }
+
+  function playIntro() {
+    var p = plan();
+    if (!p) return;
+    ensureContext();
     if (ctx.state === 'suspended') ctx.resume();
     stopAll();
     master.gain.cancelScheduledValues(ctx.currentTime);
     master.gain.setValueAtTime(0.7, ctx.currentTime);
     restartHeadline();
-    var total = schedule(ctx, master, noise, ctx.currentTime + 0.03, p, sources);
-    on = true;
-    setButton(btn, true);
-    endTimer = setTimeout(function () { on = false; setButton(btn, false); }, total);
+    schedule(ctx, master, noise, ctx.currentTime + 0.03, p, sources);
   }
 
-  function stop(btn) {
-    on = false;
-    stopAll();
-    setButton(btn, false);
-  }
+  function soundOn() { on = true; setPref('on'); setButton(true); playIntro(); }
+  function soundOff() { on = false; setPref('off'); setButton(false); stopAll(); }
 
   document.addEventListener('click', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('#sb-sound') : null;
     if (!btn) return;
-    if (on) stop(btn); else start(btn);
+    if (on) soundOff(); else soundOn();
   });
+
+  // Start with sound when the browser allows it. Browsers block audio until a
+  // visitor has interacted with the site, so most first visits start silently
+  // and the button shows "Sound off" until it is clicked.
+  function tryAutoplay(tries) {
+    if (!document.querySelector('#top h1 .sb-c') || !button()) {
+      if (tries < 120) requestAnimationFrame(function () { tryAutoplay(tries + 1); });
+      return;
+    }
+    setButton(false);
+    if (getPref() === 'off') return;
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    ensureContext();
+    if (ctx.state === 'running') { on = true; setButton(true); playIntro(); }
+  }
+  tryAutoplay(0);
 
   // For previews and tests: render the full intro into any (offline) audio context.
   window.StudioSebaSound = {
