@@ -220,11 +220,49 @@
     master.gain.cancelScheduledValues(ctx.currentTime);
     master.gain.setValueAtTime(0.7, ctx.currentTime);
     restartHeadline();
-    schedule(ctx, master, noise, ctx.currentTime + 0.03, p, sources);
+    return schedule(ctx, master, noise, ctx.currentTime + 0.03, p, sources);
   }
 
-  function soundOn() { on = true; setPref('on'); setButton(true); playIntro(); }
-  function soundOff() { on = false; setPref('off'); setButton(false); stopAll(); }
+  // Phones. This must run inside the tap. iPhones mute web audio while the
+  // ring/silent switch is on silent unless the page asks for media playback:
+  // newer iOS takes that request directly; older iOS switches over once a
+  // (silent) audio clip is playing. Playing one empty sound also wakes the
+  // audio engine on browsers that start it suspended.
+  var SILENT = 'data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA';
+  var keepAlive = null, keepTimer = null;
+
+  function unlockMobile() {
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    try {
+      if (!keepAlive) {
+        keepAlive = new Audio(SILENT);
+        keepAlive.loop = true;
+        keepAlive.setAttribute('playsinline', '');
+      }
+      var pr = keepAlive.play();
+      if (pr && pr.catch) pr.catch(function () {});
+    } catch (e) {}
+    ensureContext();
+    try {
+      var b = ctx.createBuffer(1, 1, 22050), s = ctx.createBufferSource();
+      s.buffer = b; s.connect(ctx.destination); s.start(0);
+    } catch (e) {}
+    if (ctx.state !== 'running') { try { ctx.resume(); } catch (e) {} }
+  }
+
+  function releaseMobile() {
+    clearTimeout(keepTimer);
+    if (keepAlive) { try { keepAlive.pause(); } catch (e) {} }
+  }
+
+  function soundOn() {
+    on = true; setPref('on'); setButton(true);
+    unlockMobile();
+    var total = playIntro();
+    clearTimeout(keepTimer);
+    keepTimer = setTimeout(releaseMobile, (total || 7000) + 500);
+  }
+  function soundOff() { on = false; setPref('off'); setButton(false); stopAll(); releaseMobile(); }
 
   document.addEventListener('click', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('#sb-sound') : null;
