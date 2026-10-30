@@ -235,11 +235,30 @@
   // Start with sound when the browser allows it. Browsers block audio until a
   // visitor has interacted with the site, so most first visits start silently
   // and the button shows "Sound off" until it is clicked.
+  // Line the toggle up with the end of the headline's first line ("turn" on desktop).
+  function placeToggle() {
+    var row = document.getElementById('sb-sound-row'), h1 = document.querySelector('#top h1');
+    if (!row || !h1) return;
+    var chars = h1.querySelectorAll('.sb-c');
+    if (!chars.length) return;
+    var first = chars[0].getBoundingClientRect(), right = first.right;
+    for (var i = 1; i < chars.length; i++) {
+      var r = chars[i].getBoundingClientRect();
+      if (Math.abs(r.top - first.top) > first.height * 0.5) break;
+      right = r.right;
+    }
+    var left = row.getBoundingClientRect().left;
+    if (right > left) row.style.maxWidth = Math.ceil(right - left) + 'px';
+  }
+
   function tryAutoplay(tries) {
     if (!document.querySelector('#top h1 .sb-c') || !button()) {
       if (tries < 120) requestAnimationFrame(function () { tryAutoplay(tries + 1); });
       return;
     }
+    placeToggle();
+    window.addEventListener('resize', placeToggle);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeToggle);
     setButton(false);
     if (getPref() === 'off') return;
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
